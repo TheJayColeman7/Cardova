@@ -1,6 +1,12 @@
 import SearchBar from "../components/SearchBar";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
+  const navigate = useNavigate();
+
+  const handleCreateAccount = () => {
+    navigate("/login");
+  };
   return (
     <div className="min-h-screen bg-white text-gray-800">
       <header className="bg-navy text-white py-6 shadow">
@@ -51,8 +57,11 @@ export default function Home() {
           <p className="text-gray-600 mb-4">
             Join collectors who trust Cardova to stay ahead of the market.
           </p>
-          <button className="bg-charcoal-100 text-charcoal-900 font-medium px-6 py-3 rounded-lg shadow transition focus:ring-2 focus:ring-baby-blue-500 hover:bg-navy-600 hover:text-white hover:shadow-md">
-            Start Searching Now
+          <button 
+            onClick={handleCreateAccount}
+            className="bg-charcoal-100 text-charcoal-900 font-medium px-6 py-3 rounded-lg shadow transition focus:ring-2 focus:ring-baby-blue-500 hover:bg-navy-600 hover:text-white hover:shadow-md"
+          >
+            Create an Account
           </button>
         </div>
       </main>
