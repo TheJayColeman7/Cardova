@@ -1,0 +1,287 @@
+[
+  {
+    "id": "mahomes-2017-prizm",
+    "name": "Patrick Mahomes",
+    "number": "269",
+    "set": "2017 Panini Prizm",
+    "category": "Football",
+    "variant": "Rookie",
+    "image": null,
+    "grades": [
+      { "id": "raw", "label": "Ungraded", "price": 420 },
+      { "id": "psa10", "label": "PSA 10", "price": 1850 },
+      { "id": "bgs10", "label": "BGS 10", "price": 4200 }
+    ],
+    "marketplaces": [
+      { "name": "eBay", "price": 1799 },
+      { "name": "PWCC", "price": 1895 }
+    ],
+    "sales": [
+      { "date": "2026-07-28", "title": "2017 Panini Prizm Patrick Mahomes #269 Rookie PSA 10", "price": 1900, "gradeId": "psa10", "source": "eBay" },
+      { "date": "2026-06-12", "title": "Patrick Mahomes 2017 Prizm RC PSA 10", "price": 1750, "gradeId": "psa10", "source": "eBay" },
+      { "date": "2026-05-03", "title": "2017 Prizm Mahomes Rookie PSA 10", "price": 1825, "gradeId": "psa10", "source": "eBay" },
+      { "date": "2026-07-02", "title": "2017 Panini Prizm Patrick Mahomes #269 Raw", "price": 410, "gradeId": "raw", "source": "eBay" },
+      { "date": "2026-04-18", "title": "Mahomes Prizm Rookie ungraded", "price": 445, "gradeId": "raw", "source": "eBay" },
+      { "date": "2026-03-09", "title": "2017 Prizm Mahomes BGS 10", "price": 4100, "gradeId": "bgs10", "source": "eBay" }
+    ]
+  },
+  {
+    "id": "jeter-1993-sp",
+    "name": "Derek Jeter",
+    "number": "279",
+    "set": "1993 SP Foil",
+    "category": "Baseball",
+    "variant": "Rookie",
+    "image": null,
+    "grades": [
+      { "id": "raw", "label": "Ungraded", "price": 280 },
+      { "id": "psa10", "label": "PSA 10", "price": 8500 },
+      { "id": "bgs10", "label": "BGS 10", "price": 12000 }
+    ],
+    "marketplaces": [
+      { "name": "eBay", "price": 8200 },
+      { "name": "Goldin", "price": 9100 }
+    ],
+    "sales": [
+      { "date": "2026-08-01", "title": "1993 SP Foil Derek Jeter #279 Rookie PSA 10", "price": 8800, "gradeId": "psa10", "source": "eBay" },
+      { "date": "2026-05-22", "title": "Derek Jeter 1993 SP Foil RC PSA 10", "price": 8100, "gradeId": "psa10", "source": "eBay" },
+      { "date": "2026-07-14", "title": "1993 SP Jeter Rookie raw", "price": 265, "gradeId": "raw", "source": "eBay" },
+      { "date": "2026-02-11", "title": "1993 SP Foil Jeter BGS 10", "price": 11800, "gradeId": "bgs10", "source": "eBay" }
+    ]
+  },
+  {
+    "id": "jordan-1986-fleer",
+    "name": "Michael Jordan",
+    "number": "57",
+    "set": "1986 Fleer",
+    "category": "Basketball",
+    "variant": "Rookie",
+    "image": null,
+    "grades": [
+      { "id": "raw", "label": "Ungraded", "price": 6200 },
+      { "id": "psa10", "label": "PSA 10", "price": 220000 },
+      { "id": "bgs10", "label": "BGS 10", "price": 350000 }
+    ],
+    "marketplaces": [
+      { "name": "eBay", "price": 215000 },
+      { "name": "Heritage", "price": 240000 }
+    ],
+    "sales": [
+      { "date": "2026-06-30", "title": "1986 Fleer Michael Jordan #57 Rookie PSA 10", "price": 225000, "gradeId": "psa10", "source": "eBay" },
+      { "date": "2026-01-19", "title": "1986 Fleer Jordan RC PSA 10", "price": 210000, "gradeId": "psa10", "source": "eBay" },
+      { "date": "2026-07-08", "title": "1986 Fleer Michael Jordan #57 raw", "price": 5900, "gradeId": "raw", "source": "eBay" },
+      { "date": "2026-04-02", "title": "1986 Fleer Jordan BGS 10", "price": 340000, "gradeId": "bgs10", "source": "eBay" }
+    ]
+  },
+  {
+    "id": "griffey-1989-ud",
+    "name": "Ken Griffey Jr",
+    "number": "1",
+    "set": "1989 Upper Deck",
+    "category": "Baseball",
+    "variant": "Rookie",
+    "image": null,
+    "grades": [
+      { "id": "raw", "label": "Ungraded", "price": 45 },
+      { "id": "psa10", "label": "PSA 10", "price": 320 },
+      { "id": "bgs10", "label": "BGS 10", "price": 900 }
+    ],
+    "marketplaces": [
+      { "name": "eBay", "price": 299 },
+      { "name": "COMC", "price": 310 }
+    ],
+    "sales": [
+      { "date": "2026-08-04", "title": "1989 Upper Deck Ken Griffey Jr #1 PSA 10", "price": 335, "gradeId": "psa10", "source": "eBay" },
+      { "date": "2026-06-21", "title": "Griffey Jr 1989 UD Rookie PSA 10", "price": 305, "gradeId": "psa10", "source": "eBay" },
+      { "date": "2026-07-19", "title": "1989 Upper Deck Griffey #1 raw", "price": 40, "gradeId": "raw", "source": "eBay" },
+      { "date": "2026-03-27", "title": "1989 UD Griffey BGS 10", "price": 875, "gradeId": "bgs10", "source": "eBay" }
+    ]
+  },
+  {
+    "id": "brady-2000-contenders",
+    "name": "Tom Brady",
+    "number": "144",
+    "set": "2000 Playoff Contenders",
+    "category": "Football",
+    "variant": "Rookie Ticket",
+    "image": null,
+    "grades": [
+      { "id": "raw", "label": "Ungraded", "price": 4800 },
+      { "id": "psa10", "label": "PSA 10", "price": 18500 },
+      { "id": "bgs10", "label": "BGS 10", "price": 42000 }
+    ],
+    "marketplaces": [
+      { "name": "eBay", "price": 17900 },
+      { "name": "PWCC", "price": 19200 }
+    ],
+    "sales": [
+      { "date": "2026-07-11", "title": "2000 Playoff Contenders Tom Brady #144 Rookie Ticket PSA 10", "price": 19200, "gradeId": "psa10", "source": "eBay" },
+      { "date": "2026-04-29", "title": "Tom Brady 2000 Contenders RC PSA 10", "price": 17800, "gradeId": "psa10", "source": "eBay" },
+      { "date": "2026-06-05", "title": "2000 Contenders Brady Rookie Ticket raw", "price": 4600, "gradeId": "raw", "source": "eBay" },
+      { "date": "2026-02-14", "title": "2000 Contenders Brady BGS 10", "price": 40000, "gradeId": "bgs10", "source": "eBay" }
+    ]
+  },
+  {
+    "id": "lebron-2003-topps",
+    "name": "LeBron James",
+    "number": "221",
+    "set": "2003 Topps",
+    "category": "Basketball",
+    "variant": "Rookie",
+    "image": null,
+    "grades": [
+      { "id": "raw", "label": "Ungraded", "price": 350 },
+      { "id": "psa10", "label": "PSA 10", "price": 4200 },
+      { "id": "bgs10", "label": "BGS 10", "price": 9800 }
+    ],
+    "marketplaces": [
+      { "name": "eBay", "price": 3999 },
+      { "name": "Goldin", "price": 4500 }
+    ],
+    "sales": [
+      { "date": "2026-08-06", "title": "2003 Topps LeBron James #221 Rookie PSA 10", "price": 4400, "gradeId": "psa10", "source": "eBay" },
+      { "date": "2026-05-16", "title": "LeBron 2003 Topps RC PSA 10", "price": 4050, "gradeId": "psa10", "source": "eBay" },
+      { "date": "2026-07-22", "title": "2003 Topps LeBron #221 raw", "price": 330, "gradeId": "raw", "source": "eBay" },
+      { "date": "2026-03-04", "title": "2003 Topps LeBron BGS 10", "price": 9600, "gradeId": "bgs10", "source": "eBay" }
+    ]
+  },
+  {
+    "id": "acuna-2018-chrome",
+    "name": "Ronald Acuna Jr",
+    "number": "193",
+    "set": "2018 Topps Chrome",
+    "category": "Baseball",
+    "variant": "Rookie",
+    "image": null,
+    "grades": [
+      { "id": "raw", "label": "Ungraded", "price": 55 },
+      { "id": "psa10", "label": "PSA 10", "price": 240 },
+      { "id": "bgs10", "label": "BGS 10", "price": 620 }
+    ],
+    "marketplaces": [
+      { "name": "eBay", "price": 225 },
+      { "name": "COMC", "price": 235 }
+    ],
+    "sales": [
+      { "date": "2026-08-08", "title": "2018 Topps Chrome Ronald Acuna Jr #193 PSA 10", "price": 255, "gradeId": "psa10", "source": "eBay" },
+      { "date": "2026-06-01", "title": "Acuna 2018 Chrome RC PSA 10", "price": 230, "gradeId": "psa10", "source": "eBay" },
+      { "date": "2026-07-26", "title": "2018 Chrome Acuna Rookie raw", "price": 50, "gradeId": "raw", "source": "eBay" }
+    ]
+  },
+  {
+    "id": "chase-2021-optic",
+    "name": "Ja'Marr Chase",
+    "number": "207",
+    "set": "2021 Donruss Optic",
+    "category": "Football",
+    "variant": "Rookie",
+    "image": null,
+    "grades": [
+      { "id": "raw", "label": "Ungraded", "price": 35 },
+      { "id": "psa10", "label": "PSA 10", "price": 160 },
+      { "id": "bgs10", "label": "BGS 10", "price": 410 }
+    ],
+    "marketplaces": [
+      { "name": "eBay", "price": 149 },
+      { "name": "PWCC", "price": 165 }
+    ],
+    "sales": [
+      { "date": "2026-08-03", "title": "2021 Donruss Optic Ja'Marr Chase #207 PSA 10", "price": 170, "gradeId": "psa10", "source": "eBay" },
+      { "date": "2026-05-28", "title": "Ja'Marr Chase 2021 Optic RC PSA 10", "price": 150, "gradeId": "psa10", "source": "eBay" },
+      { "date": "2026-07-09", "title": "2021 Optic Chase Rookie raw", "price": 32, "gradeId": "raw", "source": "eBay" }
+    ]
+  },
+  {
+    "id": "aaron-1954-topps",
+    "name": "Hank Aaron",
+    "number": "128",
+    "set": "1954 Topps",
+    "category": "Baseball",
+    "variant": null,
+    "image": null,
+    "grades": [
+      { "id": "raw", "label": "Ungraded", "price": 2100 },
+      { "id": "psa10", "label": "PSA 10", "price": 75000 },
+      { "id": "bgs10", "label": "BGS 10", "price": 110000 }
+    ],
+    "marketplaces": [
+      { "name": "eBay", "price": 72000 },
+      { "name": "Heritage", "price": 80000 }
+    ],
+    "sales": [
+      { "date": "2026-04-12", "title": "1954 Topps Hank Aaron #128 PSA 10", "price": 78000, "gradeId": "psa10", "source": "eBay" },
+      { "date": "2026-07-17", "title": "1954 Topps Hank Aaron #128 raw", "price": 1950, "gradeId": "raw", "source": "eBay" },
+      { "date": "2026-01-08", "title": "1954 Topps Aaron BGS 10", "price": 108000, "gradeId": "bgs10", "source": "eBay" }
+    ]
+  },
+  {
+    "id": "bo-1986-topps",
+    "name": "Bo Jackson",
+    "number": "50T",
+    "set": "1986 Topps Traded",
+    "category": "Baseball",
+    "variant": "Rookie",
+    "image": null,
+    "grades": [
+      { "id": "raw", "label": "Ungraded", "price": 25 },
+      { "id": "psa10", "label": "PSA 10", "price": 190 },
+      { "id": "bgs10", "label": "BGS 10", "price": 480 }
+    ],
+    "marketplaces": [
+      { "name": "eBay", "price": 175 },
+      { "name": "COMC", "price": 185 }
+    ],
+    "sales": [
+      { "date": "2026-08-02", "title": "1986 Topps Traded Bo Jackson #50T PSA 10", "price": 200, "gradeId": "psa10", "source": "eBay" },
+      { "date": "2026-06-18", "title": "Bo Jackson 1986 Topps Traded RC PSA 10", "price": 180, "gradeId": "psa10", "source": "eBay" },
+      { "date": "2026-07-05", "title": "1986 Topps Traded Bo Jackson raw", "price": 22, "gradeId": "raw", "source": "eBay" }
+    ]
+  },
+  {
+    "id": "charizard-base-4",
+    "name": "Charizard",
+    "number": "4",
+    "set": "Pokemon Base Set",
+    "category": "TCG",
+    "variant": "Holo",
+    "image": null,
+    "grades": [
+      { "id": "raw", "label": "Ungraded", "price": 380 },
+      { "id": "psa10", "label": "PSA 10", "price": 32000 },
+      { "id": "bgs10", "label": "BGS 10", "price": 45000 }
+    ],
+    "marketplaces": [
+      { "name": "eBay", "price": 30500 },
+      { "name": "PWCC", "price": 33000 }
+    ],
+    "sales": [
+      { "date": "2026-07-31", "title": "Pokemon Base Set Charizard #4 Holo PSA 10", "price": 34000, "gradeId": "psa10", "source": "eBay" },
+      { "date": "2026-05-09", "title": "Charizard Base Set Holo PSA 10", "price": 30100, "gradeId": "psa10", "source": "eBay" },
+      { "date": "2026-08-01", "title": "Base Set Charizard #4 Holo raw", "price": 360, "gradeId": "raw", "source": "eBay" },
+      { "date": "2026-03-21", "title": "Charizard Base Set BGS 10", "price": 44000, "gradeId": "bgs10", "source": "eBay" }
+    ]
+  },
+  {
+    "id": "pikachu-base-58",
+    "name": "Pikachu",
+    "number": "58",
+    "set": "Pokemon Base Set",
+    "category": "TCG",
+    "variant": null,
+    "image": null,
+    "grades": [
+      { "id": "raw", "label": "Ungraded", "price": 18 },
+      { "id": "psa10", "label": "PSA 10", "price": 220 },
+      { "id": "bgs10", "label": "BGS 10", "price": 510 }
+    ],
+    "marketplaces": [
+      { "name": "eBay", "price": 199 },
+      { "name": "TCGPlayer", "price": 210 }
+    ],
+    "sales": [
+      { "date": "2026-08-07", "title": "Pokemon Base Set Pikachu #58 PSA 10", "price": 230, "gradeId": "psa10", "source": "eBay" },
+      { "date": "2026-06-15", "title": "Pikachu Base Set PSA 10", "price": 205, "gradeId": "psa10", "source": "eBay" },
+      { "date": "2026-07-20", "title": "Base Set Pikachu #58 raw", "price": 15, "gradeId": "raw", "source": "eBay" }
+    ]
+  }
+]

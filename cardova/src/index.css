@@ -1,6 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html,
+body,
+#root {
+    min-height: 100%;
+}
+
+body {
+    @apply bg-white text-charcoal font-sans;
+}
+
 @keyframes fade-slide {
     0% {
         opacity: 0;
