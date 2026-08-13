@@ -1,0 +1,7 @@
+.env
+node_modules
+cardova/node_modules
+cardova-backend/node_modules
+cardova/dist
+*.log
+.DS_Store

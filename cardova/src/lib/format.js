@@ -9,6 +9,18 @@ export function formatPrice(value) {
   }).format(Number(value));
 }
 
+export function formatListingPrice(value, currency = "USD") {
+  if (value === null || value === undefined || Number.isNaN(Number(value))) {
+    return "—";
+  }
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: currency || "USD",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(Number(value));
+}
+
 export function formatDate(value) {
   if (!value) return "—";
   const date = new Date(value);

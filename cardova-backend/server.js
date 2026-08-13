@@ -1,10 +1,13 @@
+import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
 import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
+import { searchListings } from "./ebay.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: join(__dirname, ".env") });
 const catalog = JSON.parse(readFileSync(join(__dirname, "catalog.json"), "utf8"));
 
 const SPORTS = new Set(["Football", "Baseball", "Basketball"]);
@@ -12,8 +15,8 @@ const SPORTS = new Set(["Football", "Baseball", "Basketball"]);
 const app = express();
 app.use(cors());
 
-// Live eBay / 130point comps are out of scope this pass.
-// Search and detail use the sample catalog only.
+// Search and grade tabs use the sample catalog.
+// Live eBay listings are fetched separately via GET /api/cards/:id/listings.
 
 function gradePrice(card, gradeId) {
   const grade = (card.grades || []).find((item) => item.id === gradeId);
@@ -65,8 +68,10 @@ function expandCard(card) {
     };
   });
 
+  const { marketplaces, ...rest } = card;
+
   return {
-    ...card,
+    ...rest,
     sample: true,
     grades,
     sales: [...(card.sales || []), ...extraSales],
@@ -141,6 +146,17 @@ app.get("/api/cards", (req, res) => {
     results: results.map(toListItem),
     sets,
   });
+});
+
+app.get("/api/cards/:id/listings", async (req, res) => {
+  const card = catalog.find((item) => item.id === req.params.id);
+  if (!card) {
+    return res.status(404).json({ error: "We could not find that card." });
+  }
+
+  const query = [card.name, card.set, card.number].filter(Boolean).join(" ");
+  const result = await searchListings(query);
+  res.json(result);
 });
 
 app.get("/api/cards/:id", (req, res) => {

@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { FiArrowLeft, FiShare2 } from "react-icons/fi";
-import CardThumb from "../components/CardThumb";
-import AddToCardsButton from "../components/AddToCardsButton";
-import { formatDate, formatPrice } from "../lib/format";
+import CardThumb from "../components/CardThumb.jsx";
+import AddToCardsButton from "../components/AddToCardsButton.jsx";
+import EbayListings from "../components/EbayListings.jsx";
+import { formatDate, formatPrice } from "../lib/format.js";
 
 export default function CardDetail() {
   const { id } = useParams();
@@ -131,21 +132,11 @@ export default function CardDetail() {
           </div>
         </div>
 
+        <EbayListings cardId={card.id} />
+
         {card.sample && (
           <p className="text-sm text-charcoal-400 mt-4">Sample prices — not live market data yet.</p>
         )}
-
-        <div className="mt-5 flex gap-3 overflow-x-auto pb-1">
-          {(card.marketplaces || []).map((market) => (
-            <div
-              key={market.name}
-              className="min-w-[140px] rounded-2xl border border-charcoal-200 px-4 py-3"
-            >
-              <p className="text-sm font-semibold text-charcoal-400">{market.name}</p>
-              <p className="text-xl font-extrabold text-navy">{formatPrice(market.price)}</p>
-            </div>
-          ))}
-        </div>
 
         <div className="mt-5 flex gap-3 overflow-x-auto pb-1">
           {(card.grades || []).map((grade) => {
