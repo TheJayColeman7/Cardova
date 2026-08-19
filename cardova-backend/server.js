@@ -5,15 +5,17 @@ import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import { searchListings } from "./ebay.js";
+import { pokemonCardsRouter } from "./src/routes/pokemonCards.ts";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-dotenv.config({ path: join(__dirname, ".env") });
+dotenv.config({ path: join(__dirname, ".env"), quiet: true });
 const catalog = JSON.parse(readFileSync(join(__dirname, "catalog.json"), "utf8"));
 
 const SPORTS = new Set(["Football", "Baseball", "Basketball"]);
 
 const app = express();
 app.use(cors());
+app.use("/api/pokemon", pokemonCardsRouter);
 
 // Search and grade tabs use the sample catalog.
 // Live eBay listings are fetched separately via GET /api/cards/:id/listings.

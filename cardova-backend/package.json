@@ -4,8 +4,13 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "tsx server.js",
+    "db:migrate": "tsx src/scripts/migrate.ts",
+    "import:cards": "tsx src/scripts/importPokemonCards.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "node": ">=18.18.0"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +20,14 @@
     "axios": "^1.10.0",
     "cors": "^2.8.5",
     "dotenv": "^17.4.2",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "pg": "^8.23.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.2.0",
+    "@types/pg": "^8.23.1",
+    "tsx": "^4.23.12",
+    "typescript": "^7.0.2"
   }
 }

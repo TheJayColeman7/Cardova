@@ -3,5 +3,6 @@ node_modules
 cardova/node_modules
 cardova-backend/node_modules
 cardova/dist
+cardova-backend/dist
 *.log
 .DS_Store
