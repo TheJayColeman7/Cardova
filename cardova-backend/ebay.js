@@ -1,4 +1,5 @@
 import axios from "axios";
+import { mapEbayItemSummary } from "./src/adapters/ebayListingAdapter.ts";
 
 const LISTING_CACHE_MS = 5 * 60 * 1000;
 const listingCache = new Map();
@@ -75,14 +76,7 @@ async function getAccessToken() {
 }
 
 function mapListing(item) {
-  const price = item?.price?.value ?? item?.currentBidPrice?.value;
-  return {
-    title: item.title || "eBay listing",
-    price: price != null ? Number(price) : null,
-    currency: item?.price?.currency || item?.currentBidPrice?.currency || "USD",
-    image: item?.image?.imageUrl || item?.thumbnailImages?.[0]?.imageUrl || null,
-    url: item.itemWebUrl || item.itemHref || null,
-  };
+  return mapEbayItemSummary(item, new Date().toISOString());
 }
 
 function publicEbayError(err, stage) {
@@ -145,7 +139,7 @@ export async function searchListings(query) {
     });
 
     const items = Array.isArray(response.data.itemSummaries) ? response.data.itemSummaries : [];
-    const listings = items.map(mapListing).filter((item) => item.url);
+    const listings = items.map(mapListing).filter((item) => item);
     const value = { listings, live: true };
     listingCache.set(q, { value, expiresAt: Date.now() + LISTING_CACHE_MS });
     return value;

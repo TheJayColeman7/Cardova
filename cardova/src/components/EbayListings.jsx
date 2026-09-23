@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { cardApiUrl } from "../lib/cards";
 import { formatListingPrice } from "../lib/format";
 
 function ListingCard({ listing }) {
@@ -12,9 +13,9 @@ function ListingCard({ listing }) {
       className="min-w-[148px] max-w-[148px] shrink-0 rounded-2xl border border-charcoal-200 overflow-hidden bg-white hover:border-navy"
     >
       <div className="h-28 bg-charcoal-50 flex items-center justify-center overflow-hidden">
-        {listing.image && !broken ? (
+        {listing.imageUrl && !broken ? (
           <img
-            src={listing.image}
+            src={listing.imageUrl}
             alt=""
             className="h-full w-full object-contain"
             onError={() => setBroken(true)}
@@ -28,6 +29,11 @@ function ListingCard({ listing }) {
         <p className="mt-1 text-lg font-extrabold text-navy">
           {formatListingPrice(listing.price, listing.currency)}
         </p>
+        {listing.shipping != null && (
+          <p className="text-xs text-charcoal-400">
+            + {formatListingPrice(listing.shipping, listing.currency)} shipping
+          </p>
+        )}
         <p className="mt-1 text-sm font-bold text-baby-blue-600">View on eBay</p>
       </div>
     </a>
@@ -49,7 +55,7 @@ export default function EbayListings({ cardId }) {
       setReason("");
       setDetail("");
       try {
-        const res = await fetch(`/api/cards/${cardId}/listings`);
+        const res = await fetch(cardApiUrl(cardId, "/listings"));
         if (!res.ok) throw new Error("bad");
         const json = await res.json();
         if (!cancelled) {
@@ -63,37 +69,6 @@ export default function EbayListings({ cardId }) {
           setListings([]);
           setReason("ebay-error");
           setDetail("");
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    };
-
-    load();
-    return () => {
-      cancelled = true;
-    };
-  }, [cardId]);
-
-  useEffect(() => {
-    if (!cardId) return undefined;
-    let cancelled = false;
-
-    const load = async () => {
-      setLoading(true);
-      setReason("");
-      try {
-        const res = await fetch(`/api/cards/${cardId}/listings`);
-        if (!res.ok) throw new Error("bad");
-        const json = await res.json();
-        if (!cancelled) {
-          setListings(json.listings || []);
-          setReason(json.reason || "");
-        }
-      } catch {
-        if (!cancelled) {
-          setListings([]);
-          setReason("ebay-error");
         }
       } finally {
         if (!cancelled) setLoading(false);

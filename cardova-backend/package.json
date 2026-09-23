@@ -7,7 +7,7 @@
     "start": "tsx server.js",
     "db:migrate": "tsx src/scripts/migrate.ts",
     "import:cards": "tsx src/scripts/importPokemonCards.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "tsx --test src/adapters/catalogCardAdapter.test.ts src/adapters/pokemonCardAdapter.test.ts src/adapters/ebayListingAdapter.test.ts src/domain/market.test.ts src/services/cardService.test.ts src/utils/databaseUnavailable.test.ts"
   },
   "engines": {
     "node": ">=18.18.0"

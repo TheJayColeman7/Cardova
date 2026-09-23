@@ -14,31 +14,38 @@ function writeList(list) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
 }
 
+function sameCard(saved, card) {
+  return saved.id === card.id || saved.id === card.sourceId;
+}
+
+export function toSavedCard(card) {
+  return {
+    id: card.id,
+    sourceId: card.sourceId,
+    name: card.name,
+    cardNumber: card.cardNumber ?? card.number ?? null,
+    setName: card.setName ?? card.set ?? null,
+    variation: card.variation ?? card.variant ?? null,
+    finish: card.finish ?? null,
+    rookie: card.rookie ?? null,
+    sport: card.sport ?? null,
+    game: card.game ?? card.category ?? null,
+    imageSmallUrl: card.imageSmallUrl ?? card.image ?? null,
+  };
+}
+
 export function getSavedCards() {
   return readList();
 }
 
-export function isCardSaved(id) {
-  return readList().some((card) => card.id === id);
+export function isCardSaved(card) {
+  return readList().some((saved) => sameCard(saved, card));
 }
 
 export function toggleSavedCard(card) {
   const list = readList();
-  const exists = list.some((item) => item.id === card.id);
-  const next = exists
-    ? list.filter((item) => item.id !== card.id)
-    : [
-        ...list,
-        {
-          id: card.id,
-          name: card.name,
-          number: card.number,
-          set: card.set,
-          variant: card.variant,
-          category: card.category,
-          image: card.image,
-        },
-      ];
+  const exists = list.some((saved) => sameCard(saved, card));
+  const next = exists ? list.filter((saved) => !sameCard(saved, card)) : [...list, toSavedCard(card)];
   writeList(next);
   return !exists;
 }

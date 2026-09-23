@@ -197,8 +197,8 @@ export default function SearchResults() {
           </h1>
         )}
 
-        {data?.sample && !empty && (
-          <p className="text-sm text-charcoal-400 mb-3">Sample prices — not live market data yet.</p>
+        {results.some((item) => item.samplePrices?.length) && !empty && (
+          <p className="text-sm text-charcoal-400 mb-3">Sample prices — not live market data.</p>
         )}
 
         {loading && <p className="text-charcoal py-8">Looking up cards…</p>}
@@ -211,8 +211,8 @@ export default function SearchResults() {
 
         {!loading && results.length > 0 && (
           <div className={grid ? "grid grid-cols-1 sm:grid-cols-2 gap-3" : "flex flex-col gap-3"}>
-            {results.map((card) => (
-              <SearchResultRow key={card.id} card={card} />
+            {results.map((item) => (
+              <SearchResultRow key={item.card.id} item={item} />
             ))}
           </div>
         )}

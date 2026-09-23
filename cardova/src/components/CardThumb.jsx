@@ -1,13 +1,22 @@
 import { useEffect, useState } from "react";
 
-export default function CardThumb({ card, className = "" }) {
+function thumbSrc(card, preferLarge) {
+  if (preferLarge && card?.imageLargeUrl) return card.imageLargeUrl;
+  if (card?.imageSmallUrl) return card.imageSmallUrl;
+  if (card?.imageLargeUrl) return card.imageLargeUrl;
+  if (card?.image) return card.image;
+  const fileId = card?.source === "catalog" ? card.sourceId : !card?.source && card?.id && !String(card.id).includes(":") ? card.id : null;
+  return fileId ? `/cards/${fileId}.jpg` : null;
+}
+
+export default function CardThumb({ card, className = "", preferLarge = false }) {
   const letter = (card?.name || "?").charAt(0).toUpperCase();
   const [broken, setBroken] = useState(false);
-  const src = !broken && (card?.image || (card?.id ? `/cards/${card.id}.jpg` : null));
+  const src = !broken && thumbSrc(card, preferLarge);
 
   useEffect(() => {
     setBroken(false);
-  }, [card?.id, card?.image]);
+  }, [card?.id, card?.image, card?.imageSmallUrl, card?.imageLargeUrl, preferLarge]);
 
   return (
     <div
@@ -25,7 +34,7 @@ export default function CardThumb({ card, className = "" }) {
         <div className="flex flex-col items-center justify-center px-2 text-center">
           <span className="font-display text-2xl font-bold text-baby-blue">{letter}</span>
           <span className="text-[10px] uppercase tracking-wide text-baby-blue-100 leading-tight mt-1">
-            {card?.category}
+            {card?.sport || card?.game || card?.category}
           </span>
         </div>
       )}

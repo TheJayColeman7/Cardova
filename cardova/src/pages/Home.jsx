@@ -38,7 +38,7 @@ export default function Home() {
           </div>
           <div className="p-6 bg-charcoal-50 rounded-2xl border border-charcoal-100">
             <h2 className="text-xl font-bold text-navy">See the price</h2>
-            <p className="text-charcoal mt-2">What it sold for lately.</p>
+            <p className="text-charcoal mt-2">Sample prices, plus cards listed on eBay now.</p>
           </div>
           <div className="p-6 bg-charcoal-50 rounded-2xl border border-charcoal-100">
             <h2 className="text-xl font-bold text-navy">Scan</h2>

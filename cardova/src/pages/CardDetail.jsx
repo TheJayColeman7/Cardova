@@ -4,15 +4,23 @@ import { FiArrowLeft, FiShare2 } from "react-icons/fi";
 import CardThumb from "../components/CardThumb.jsx";
 import AddToCardsButton from "../components/AddToCardsButton.jsx";
 import EbayListings from "../components/EbayListings.jsx";
+import { cardApiUrl, cardNumberOf, cardSetOf, sameGrade, samplePriceKey } from "../lib/cards.js";
 import { formatDate, formatPrice } from "../lib/format.js";
+
+const NO_SAMPLE_PRICES = [];
+
+function identityLine(card) {
+  const bits = [card.year, card.manufacturer, card.sport || card.game].filter(Boolean);
+  return bits.join(" · ");
+}
 
 export default function CardDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [card, setCard] = useState(null);
+  const [detail, setDetail] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
-  const [gradeId, setGradeId] = useState("raw");
+  const [selectedKey, setSelectedKey] = useState("");
   const [shareNote, setShareNote] = useState("");
 
   useEffect(() => {
@@ -21,15 +29,15 @@ export default function CardDetail() {
       setLoading(true);
       setError("");
       try {
-        const res = await fetch(`/api/cards/${id}`);
+        const res = await fetch(cardApiUrl(id));
         if (res.status === 404) {
           throw new Error("missing");
         }
         if (!res.ok) throw new Error("bad");
         const json = await res.json();
         if (!cancelled) {
-          setCard(json);
-          setGradeId(json.grades?.[0]?.id || "raw");
+          setDetail(json);
+          setSelectedKey(json.samplePrices?.[0] ? samplePriceKey(json.samplePrices[0]) : "");
         }
       } catch (err) {
         if (!cancelled) {
@@ -49,19 +57,21 @@ export default function CardDetail() {
     };
   }, [id]);
 
-  const selectedGrade = useMemo(
-    () => card?.grades?.find((grade) => grade.id === gradeId) || card?.grades?.[0],
-    [card, gradeId]
+  const card = detail?.card;
+  const samplePrices = detail?.samplePrices ?? NO_SAMPLE_PRICES;
+  const selectedPrice = useMemo(
+    () => samplePrices.find((price) => samplePriceKey(price) === selectedKey) || samplePrices[0],
+    [samplePrices, selectedKey]
   );
 
-  const sales = useMemo(
-    () => (card?.sales || []).filter((sale) => sale.gradeId === selectedGrade?.id),
-    [card, selectedGrade]
+  const sampleSales = useMemo(
+    () => (detail?.sampleSales || []).filter((sale) => sameGrade(sale, selectedPrice)),
+    [detail, selectedPrice]
   );
 
   const handleShare = async () => {
     const url = window.location.href;
-    const title = card ? `${card.name} #${card.number}` : "Sweet Home Cards";
+    const title = card ? `${card.name} #${cardNumberOf(card)}` : "Sweet Home Cards";
     try {
       if (navigator.share) {
         await navigator.share({ title, url });
@@ -90,6 +100,8 @@ export default function CardDetail() {
     );
   }
 
+  const badge = card.variation || card.finish || card.parallel || (card.rookie ? "Rookie" : null);
+
   return (
     <div className="bg-white min-h-[calc(100vh-64px)]">
       <div className="max-w-3xl mx-auto px-3 py-3 flex items-center gap-2">
@@ -116,59 +128,71 @@ export default function CardDetail() {
 
       <div className="max-w-3xl mx-auto px-4 pb-10">
         <div className="flex gap-4 items-start">
-          <CardThumb card={card} className="h-40 w-28 shrink-0" />
+          <CardThumb card={card} preferLarge className="h-40 w-28 shrink-0" />
           <div className="min-w-0">
             <p className="text-2xl font-extrabold text-navy">
-              {card.name} #{card.number}
+              {card.name} #{cardNumberOf(card)}
             </p>
-            {card.variant && (
+            {badge && (
               <span className="inline-block mt-2 text-xs font-semibold uppercase tracking-wide border border-charcoal-300 text-charcoal px-1.5 py-0.5 rounded">
-                {card.variant}
+                {badge}
               </span>
             )}
             <p className="mt-3 inline-flex items-center rounded-full bg-charcoal-50 border border-charcoal-200 px-3 py-1 text-sm font-semibold text-navy">
-              {card.set}
+              {cardSetOf(card)}
             </p>
+            {identityLine(card) && <p className="mt-2 text-sm text-charcoal-400">{identityLine(card)}</p>}
           </div>
         </div>
 
         <EbayListings cardId={card.id} />
 
-        {card.sample && (
-          <p className="text-sm text-charcoal-400 mt-4">Sample prices — not live market data yet.</p>
+        <p className="text-sm text-charcoal-400 mt-4">Sold comps are not available yet.</p>
+
+        {samplePrices.length > 0 && (
+          <p className="text-sm text-charcoal-400 mt-2">Sample prices — not live market data.</p>
         )}
 
-        <div className="mt-5 flex gap-3 overflow-x-auto pb-1">
-          {(card.grades || []).map((grade) => {
-            const selected = grade.id === selectedGrade?.id;
-            return (
-              <button
-                key={grade.id}
-                type="button"
-                onClick={() => setGradeId(grade.id)}
-                className={`min-w-[108px] shrink-0 min-h-16 rounded-2xl px-3 py-3 text-left border-2 ${
-                  selected
-                    ? "bg-navy text-white border-navy"
-                    : "bg-white text-charcoal border-charcoal-200"
-                }`}
-              >
-                <span className="block text-sm font-semibold">{grade.label}</span>
-                <span className="block text-xl font-extrabold">{formatPrice(grade.price)}</span>
-              </button>
-            );
-          })}
-        </div>
+        {samplePrices.length > 0 && (
+          <div className="mt-5 flex gap-3 overflow-x-auto pb-1">
+            {samplePrices.map((price) => {
+              const key = samplePriceKey(price);
+              const selected = key === samplePriceKey(selectedPrice);
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => setSelectedKey(key)}
+                  className={`min-w-[108px] shrink-0 min-h-16 rounded-2xl px-3 py-3 text-left border-2 ${
+                    selected
+                      ? "bg-navy text-white border-navy"
+                      : "bg-white text-charcoal border-charcoal-200"
+                  }`}
+                >
+                  <span className="block text-sm font-semibold">{price.label}</span>
+                  <span className="block text-xl font-extrabold">{formatPrice(price.price)}</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
 
-        {selectedGrade && (
+        {selectedPrice && (
           <p className="mt-5 text-2xl font-extrabold text-navy">
-            About {formatPrice(selectedGrade.price)}
+            Sample price {formatPrice(selectedPrice.price)}
           </p>
         )}
 
+        {samplePrices.length === 0 && (
+          <p className="mt-5 text-charcoal">No sample prices for this card.</p>
+        )}
+
         <div className="mt-8">
-          <h2 className="text-xl font-extrabold text-navy">{selectedGrade?.label} sales</h2>
+          <h2 className="text-xl font-extrabold text-navy">
+            {selectedPrice ? `${selectedPrice.label} sample records` : "Sample records"}
+          </h2>
           <p className="text-charcoal-400 text-sm mt-1">
-            {sales.length} sale{sales.length === 1 ? "" : "s"} in our sample
+            {sampleSales.length} demo record{sampleSales.length === 1 ? "" : "s"}. These are not sold comps.
           </p>
 
           <div className="mt-4 overflow-x-auto">
@@ -181,28 +205,20 @@ export default function CardDetail() {
                 </tr>
               </thead>
               <tbody>
-                {sales.length === 0 && (
+                {sampleSales.length === 0 && (
                   <tr>
                     <td colSpan={3} className="py-6 text-charcoal">
-                      No sample sales for this grade yet.
+                      No sample records for this grade.
                     </td>
                   </tr>
                 )}
-                {sales.map((sale, index) => (
+                {sampleSales.map((sale, index) => (
                   <tr
                     key={`${sale.date}-${sale.title}`}
                     className={index % 2 === 0 ? "bg-white" : "bg-charcoal-50"}
                   >
                     <td className="py-3 pr-3 whitespace-nowrap">{formatDate(sale.date)}</td>
-                    <td className="py-3 pr-3 font-medium text-charcoal">
-                      {sale.url ? (
-                        <a href={sale.url} className="text-baby-blue-600" target="_blank" rel="noreferrer">
-                          {sale.title}
-                        </a>
-                      ) : (
-                        sale.title
-                      )}
-                    </td>
+                    <td className="py-3 pr-3 font-medium text-charcoal">{sale.title}</td>
                     <td className="py-3 font-bold text-navy text-right whitespace-nowrap">
                       {formatPrice(sale.price)}
                     </td>

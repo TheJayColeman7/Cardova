@@ -9,8 +9,8 @@ export default function AddToCardsButton({ card, className = "" }) {
 
   useEffect(() => {
     if (!loggedIn) return;
-    setSaved(isCardSaved(card.id));
-  }, [card.id, loggedIn]);
+    setSaved(isCardSaved(card));
+  }, [card, loggedIn]);
 
   if (!loggedIn) return null;
 

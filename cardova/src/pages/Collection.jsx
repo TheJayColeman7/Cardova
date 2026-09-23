@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { getSavedCards, toggleSavedCard } from "../lib/collection";
 import { useAuth } from "../lib/auth";
 import CardThumb from "../components/CardThumb";
+import { cardNumberOf, cardSetOf } from "../lib/cards";
 
 export default function Collection() {
   const { loggedIn } = useAuth();
@@ -48,13 +49,13 @@ export default function Collection() {
           {cards.map((card) => (
             <li key={card.id}>
               <div className="flex gap-3 items-center border border-charcoal-200 rounded-2xl p-3">
-                <Link to={`/card/${card.id}`} className="flex flex-1 gap-3 items-center min-w-0">
+                <Link to={`/card/${encodeURIComponent(card.id)}`} className="flex flex-1 gap-3 items-center min-w-0">
                   <CardThumb card={card} className="h-16 w-12 shrink-0" />
                   <div className="min-w-0">
                     <p className="font-bold text-navy truncate">
-                      {card.name} #{card.number}
+                      {card.name} #{cardNumberOf(card)}
                     </p>
-                    <p className="text-sm text-charcoal-400 truncate">{card.set}</p>
+                    <p className="text-sm text-charcoal-400 truncate">{cardSetOf(card)}</p>
                   </div>
                 </Link>
                 <button
