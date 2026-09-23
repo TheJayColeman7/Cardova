@@ -1,3 +1,8 @@
+/**
+ * @deprecated The Pokémon TCG API at api.pokemontcg.io is retired.
+ * Catalog import uses the Scrydex English card list instead.
+ * This client is not on the active import path.
+ */
 import { getPokemonTcgApiKey } from "../config/env.js";
 import type { PokemonTcgCard, PokemonTcgCardsPage } from "../types/pokemonCard.js";
 import { HttpStatusError, parseRetryAfter } from "../utils/httpStatusError.js";

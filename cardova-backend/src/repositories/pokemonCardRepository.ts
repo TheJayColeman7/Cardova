@@ -1,4 +1,5 @@
 import { getPool } from "../config/database.js";
+import type { PokemonPrintRecord } from "../recognition/resolvePokemonCandidate.js";
 import type {
   PokemonCardDetail,
   PokemonCardListItem,
@@ -214,4 +215,46 @@ export async function getPokemonCardById(id: string): Promise<PokemonCardDetail 
     ...toListItem(row),
     rawData: row.raw_data,
   };
+}
+
+function sameCardNumber(left: string | null, right: string): boolean {
+  const a = left?.trim().toLowerCase() ?? "";
+  const b = right.trim().toLowerCase();
+  if (!a || !b) return false;
+  if (a === b) return true;
+  if (/^\d+$/.test(a) && /^\d+$/.test(b)) return String(Number(a)) === String(Number(b));
+  return false;
+}
+
+export async function findPokemonCardsByNameAndNumber(
+  name: string,
+  cardNumber: string
+): Promise<PokemonPrintRecord[]> {
+  const pool = getPool();
+  const result = await pool.query<{
+    api_id: string;
+    card_name: string;
+    card_number: string | null;
+    set_id: string | null;
+    set_name: string | null;
+  }>(
+    `
+      SELECT api_id, card_name, card_number, set_id, set_name
+      FROM pokemon_cards
+      WHERE lower(btrim(card_name)) = lower(btrim($1))
+         OR lower(btrim(pokemon_name)) = lower(btrim($1))
+      LIMIT 1000
+    `,
+    [name]
+  );
+
+  return result.rows
+    .filter((row) => sameCardNumber(row.card_number, cardNumber))
+    .map((row) => ({
+      apiId: row.api_id,
+      cardName: row.card_name,
+      cardNumber: row.card_number,
+      setId: row.set_id,
+      setName: row.set_name,
+    }));
 }

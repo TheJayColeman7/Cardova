@@ -1,27 +1,41 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FiX, FiZap, FiZapOff, FiHelpCircle } from "react-icons/fi";
-
-const PHOTO_KEY = "shc-scan-photo";
+import RecognitionCandidates from "../components/RecognitionCandidates.jsx";
 
 export default function Scan() {
   const navigate = useNavigate();
   const videoRef = useRef(null);
   const streamRef = useRef(null);
+  const fileRef = useRef(null);
+  const previewRef = useRef(null);
   const [error, setError] = useState("");
   const [hint, setHint] = useState("");
   const [cameraReady, setCameraReady] = useState(false);
-  const [photo, setPhoto] = useState(null);
-  const [query, setQuery] = useState("");
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
+  const [status, setStatus] = useState("camera");
+  const [result, setResult] = useState(null);
   const [torchOn, setTorchOn] = useState(false);
   const [torchSupported, setTorchSupported] = useState(false);
 
   useEffect(() => {
+    previewRef.current = previewUrl;
+  }, [previewUrl]);
+
+  useEffect(() => {
+    return () => {
+      if (previewRef.current) URL.revokeObjectURL(previewRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (imageFile) return undefined;
     let cancelled = false;
 
     const startCamera = async () => {
       if (!navigator.mediaDevices?.getUserMedia) {
-        setError("This browser cannot use the camera. Type the card name instead.");
+        setError("This browser cannot use the camera. Choose a photo instead.");
         return;
       }
 
@@ -43,7 +57,7 @@ export default function Scan() {
         const capabilities = track.getCapabilities?.() || {};
         setTorchSupported(Boolean(capabilities.torch));
       } catch {
-        setError("Allow the camera, or go back and type the card name.");
+        setError("Allow the camera, or choose a photo.");
       }
     };
 
@@ -54,11 +68,62 @@ export default function Scan() {
       streamRef.current?.getTracks().forEach((track) => track.stop());
       streamRef.current = null;
     };
-  }, []);
+  }, [imageFile]);
+
+  useEffect(() => {
+    if (!imageFile) return undefined;
+    let cancelled = false;
+
+    const identify = async () => {
+      setStatus("identifying");
+      setError("");
+      setResult(null);
+      const body = new FormData();
+      body.append("image", imageFile);
+      try {
+        const res = await fetch("/api/recognition/cards", { method: "POST", body });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          throw new Error(json.message || "We couldn't identify that photo.");
+        }
+        if (!cancelled) {
+          setResult(json);
+          setStatus("ready");
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setStatus("error");
+          setError(err.message || "We couldn't identify that photo.");
+        }
+      }
+    };
+
+    identify();
+    return () => {
+      cancelled = true;
+    };
+  }, [imageFile]);
 
   const stopCamera = () => {
     streamRef.current?.getTracks().forEach((track) => track.stop());
     streamRef.current = null;
+  };
+
+  const selectImage = (file) => {
+    if (!file) return;
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    setImageFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
+    stopCamera();
+  };
+
+  const resetPhoto = () => {
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    setPreviewUrl(null);
+    setImageFile(null);
+    setResult(null);
+    setStatus("camera");
+    setError("");
   };
 
   const toggleTorch = async () => {
@@ -80,27 +145,39 @@ export default function Scan() {
     canvas.height = video.videoHeight;
     const ctx = canvas.getContext("2d");
     ctx.drawImage(video, 0, 0);
-    const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
-    setPhoto(dataUrl);
-    try {
-      sessionStorage.setItem(PHOTO_KEY, dataUrl);
-    } catch {
-      /* ignore quota */
+    canvas.toBlob(
+      (blob) => {
+        if (!blob) return;
+        selectImage(new File([blob], "scan.jpg", { type: "image/jpeg" }));
+      },
+      "image/jpeg",
+      0.85
+    );
+  };
+
+  const onChoosePhoto = (event) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (file) selectImage(file);
+  };
+
+  const confirmCandidate = (candidate) => {
+    if (candidate.resolutionStatus === "resolved" && candidate.canonicalCardId) {
+      navigate(`/card/${encodeURIComponent(candidate.canonicalCardId)}`);
+      return;
     }
-    stopCamera();
+    const query = [candidate.name, candidate.cardNumber].filter(Boolean).join(" ");
+    navigate(query ? `/search?q=${encodeURIComponent(query)}` : "/search");
   };
 
-  const handleSearch = (event) => {
-    event.preventDefault();
-    if (!query.trim()) return;
-    navigate(`/search?q=${encodeURIComponent(query.trim())}&from=scan`);
-  };
-
-  if (photo) {
+  if (previewUrl) {
+    const candidates = result?.candidates || [];
     return (
       <div className="min-h-screen bg-navy text-white flex flex-col">
         <header className="relative flex items-center justify-between px-4 py-3">
-          <h1 className="text-lg font-bold mx-auto">Nice photo!</h1>
+          <h1 className="text-lg font-bold mx-auto">
+            {status === "identifying" ? "Looking at your card" : "Check this card"}
+          </h1>
           <Link
             to="/"
             className="absolute right-3 p-2 rounded-full min-h-11 min-w-11 flex items-center justify-center"
@@ -110,29 +187,40 @@ export default function Scan() {
           </Link>
         </header>
         <div className="px-4 pb-4">
-          <img src={photo} alt="Your card" className="w-full max-h-72 object-contain rounded-2xl bg-black" />
+          <img src={previewUrl} alt="Your card" className="w-full max-h-72 object-contain rounded-2xl bg-black" />
         </div>
-        <form onSubmit={handleSearch} className="flex-1 bg-white text-charcoal rounded-t-3xl p-5">
-          <p className="text-xl font-bold text-navy mb-2">Type the player or card name.</p>
-          <p className="text-charcoal mb-4">We saved your photo. Now tell us what to look up.</p>
-          <input
-            autoFocus
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder='Try "Mahomes rookie"'
-            className="w-full min-h-14 px-4 rounded-2xl border-2 border-charcoal-200 text-lg focus:outline-none focus:ring-2 focus:ring-baby-blue"
-          />
-          <button
-            type="submit"
-            className="mt-4 w-full min-h-14 rounded-2xl bg-black text-white font-bold text-lg"
-          >
-            Search
-          </button>
-          <Link to="/" className="mt-3 block text-center text-navy font-semibold py-3">
-            Back home
-          </Link>
-        </form>
+        <div className="flex-1 bg-white text-charcoal rounded-t-3xl p-5">
+          {status === "identifying" && <p className="text-lg font-semibold text-navy">Identifying the card…</p>}
+          {status === "error" && (
+            <div>
+              <p className="text-lg font-semibold text-navy">{error}</p>
+              <button type="button" onClick={resetPhoto} className="mt-4 w-full min-h-14 rounded-2xl bg-black text-white font-bold text-lg">
+                Try another photo
+              </button>
+              <Link to="/search" className="mt-3 block text-center text-navy font-semibold py-3">
+                Search by name
+              </Link>
+            </div>
+          )}
+          {status === "ready" && result?.outcome === "no_card_detected" && (
+            <div>
+              <p className="text-lg font-semibold text-navy">We couldn't find a card in that photo.</p>
+              <button type="button" onClick={resetPhoto} className="mt-4 w-full min-h-14 rounded-2xl bg-black text-white font-bold text-lg">
+                Try another photo
+              </button>
+              <Link to="/search" className="mt-3 block text-center text-navy font-semibold py-3">
+                Search by name
+              </Link>
+            </div>
+          )}
+          {status === "ready" && candidates.length > 0 && (
+            <RecognitionCandidates
+              candidates={candidates}
+              onConfirm={confirmCandidate}
+              onNone={() => navigate("/search")}
+            />
+          )}
+        </div>
       </div>
     );
   }
@@ -173,9 +261,7 @@ export default function Scan() {
           type="button"
           className="h-12 w-12 rounded-full bg-black/50 flex items-center justify-center"
           aria-label="Help"
-          onClick={() =>
-            setHint("Fill the box with your card, then tap the round button.")
-          }
+          onClick={() => setHint("Fill the box with your card, then tap the round button.")}
         >
           <FiHelpCircle size={22} />
         </button>
@@ -207,11 +293,21 @@ export default function Scan() {
           className="h-20 w-20 rounded-full bg-white border-4 border-baby-blue focus:outline-none focus:ring-2 focus:ring-baby-blue disabled:opacity-40"
           aria-label="Take photo"
         />
-        <Link
-          to="/"
-          onClick={stopCamera}
-          className="text-white font-semibold underline underline-offset-4"
+        <input
+          ref={fileRef}
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          className="hidden"
+          onChange={onChoosePhoto}
+        />
+        <button
+          type="button"
+          onClick={() => fileRef.current?.click()}
+          className="min-h-12 px-5 rounded-full bg-white text-navy font-bold"
         >
+          Choose Photo
+        </button>
+        <Link to="/search" onClick={stopCamera} className="text-white font-semibold underline underline-offset-4">
           Type the card name instead
         </Link>
       </div>

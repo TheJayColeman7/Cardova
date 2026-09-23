@@ -42,7 +42,7 @@ export default function Home() {
           </div>
           <div className="p-6 bg-charcoal-50 rounded-2xl border border-charcoal-100">
             <h2 className="text-xl font-bold text-navy">Scan</h2>
-            <p className="text-charcoal mt-2">Take a photo, then type the name.</p>
+            <p className="text-charcoal mt-2">Take a photo, then confirm the card.</p>
           </div>
         </div>
 

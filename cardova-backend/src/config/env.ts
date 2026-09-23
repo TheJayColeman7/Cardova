@@ -64,3 +64,10 @@ export function getPokemonTcgApiKey(): string | undefined {
   const key = readEnv("POKEMON_TCG_API_KEY");
   return key || undefined;
 }
+
+export function getScrydexCredentials(): { apiKey: string; teamId: string } | null {
+  const apiKey = readEnv("SCRYDEX_API_KEY");
+  const teamId = readEnv("SCRYDEX_TEAM_ID");
+  if (!apiKey || !teamId) return null;
+  return { apiKey, teamId };
+}

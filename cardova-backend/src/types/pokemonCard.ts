@@ -52,7 +52,7 @@ export interface PokemonCardRecord {
   imageSmallUrl: string | null;
   imageLargeUrl: string | null;
   releaseDate: string | null;
-  rawData: PokemonTcgCard;
+  rawData: Record<string, unknown>;
 }
 
 export interface PokemonCardRow {
@@ -74,7 +74,7 @@ export interface PokemonCardRow {
   image_small_url: string | null;
   image_large_url: string | null;
   release_date: string | null;
-  raw_data: PokemonTcgCard;
+  raw_data: Record<string, unknown>;
   created_at: Date;
   updated_at: Date;
 }
@@ -103,7 +103,7 @@ export interface PokemonCardListItem {
 }
 
 export interface PokemonCardDetail extends PokemonCardListItem {
-  rawData: PokemonTcgCard;
+  rawData: Record<string, unknown>;
 }
 
 export interface PokemonCardListQuery {

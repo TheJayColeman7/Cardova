@@ -1,6 +1,6 @@
 # Cardova Backend
 
-Express API for Cardova. The sports-card catalog and eBay listings remain on the existing JavaScript routes. Pokémon card data is imported from the [Pokémon TCG API](https://docs.pokemontcg.io/) into local PostgreSQL.
+Express API for Cardova. The sports-card catalog and eBay listings remain on the existing JavaScript routes. Pokémon card identity is imported from the Scrydex English card list into local PostgreSQL.
 
 Requires Node.js 18.18 or newer (native `fetch`).
 
@@ -12,7 +12,7 @@ npm install
 copy .env.example .env
 ```
 
-On macOS/Linux use `cp .env.example .env`. Fill in database credentials and, optionally, `POKEMON_TCG_API_KEY`. Never commit `.env`.
+On macOS/Linux use `cp .env.example .env`. Fill in database credentials and `SCRYDEX_API_KEY` plus `SCRYDEX_TEAM_ID`. Never commit `.env`.
 
 Create the PostgreSQL database if it does not exist:
 
@@ -27,9 +27,9 @@ npm run db:migrate
 npm run import:cards
 ```
 
-`db:migrate` is idempotent. `import:cards` upserts on `api_id`, so re-running updates existing rows instead of creating duplicates.
+`db:migrate` is idempotent. `import:cards` reads `GET /pokemon/v1/en/cards` from Scrydex, 100 cards per page, and upserts on `api_id`. A Scrydex id such as `base1-4` stays the catalog id, so the Sweet Home Cards card id is `pokemon:base1-4`. The import does not request prices. Re-running updates existing rows instead of creating duplicates.
 
-A free API key from the [Pokémon TCG Developer Portal](https://dev.pokemontcg.io) is strongly recommended. Unauthenticated requests are limited to about 30 per minute and 1,000 per day. A full catalog import is roughly 80 pages of 250 cards.
+The old Pokémon TCG API client remains in the repo and is not used by this command.
 
 On Windows PostgreSQL installs, `DATABASE_PASSWORD` is usually required. An empty password is ignored by the `pg` client and will fail SCRAM authentication.
 

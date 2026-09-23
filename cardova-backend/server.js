@@ -7,14 +7,20 @@ import { dirname, join } from "path";
 import { searchListings } from "./ebay.js";
 import { pokemonCardsRouter } from "./src/routes/pokemonCards.ts";
 import { activeListingsResponse } from "./src/domain/market.ts";
-import { getPokemonCardById, listPokemonCards } from "./src/repositories/pokemonCardRepository.ts";
+import {
+  findPokemonCardsByNameAndNumber,
+  getPokemonCardById,
+  listPokemonCards,
+} from "./src/repositories/pokemonCardRepository.ts";
 import {
   CardCatalogUnavailableError,
   buildActiveListingQuery,
   createCardService,
 } from "./src/services/cardService.ts";
 import { isDatabaseUnavailable } from "./src/utils/databaseUnavailable.ts";
-
+import { createRecognitionRouter } from "./src/routes/recognition.ts";
+import { createRecognitionService } from "./src/services/recognitionService.ts";
+import { createScrydexVisionProvider } from "./src/providers/scrydex/scrydexVisionProvider.ts";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: join(__dirname, ".env"), quiet: true });
 const catalog = JSON.parse(readFileSync(join(__dirname, "catalog.json"), "utf8"));
@@ -37,9 +43,15 @@ const cardService = createCardService({
   },
 });
 
+const recognition = createRecognitionService({
+  provider: createScrydexVisionProvider(),
+  pokemon: { findByNameAndNumber: findPokemonCardsByNameAndNumber },
+});
+
 const app = express();
 app.use(cors());
 app.use("/api/pokemon", pokemonCardsRouter);
+app.use("/api/recognition", createRecognitionRouter((image) => recognition.recognize(image)));
 
 function sendCardError(res, error) {
   if (error instanceof CardCatalogUnavailableError || error?.name === "ConfigError") {
