@@ -4,6 +4,7 @@ import { FiArrowLeft, FiShare2 } from "react-icons/fi";
 import CardThumb from "../components/CardThumb.jsx";
 import AddToCardsButton from "../components/AddToCardsButton.jsx";
 import EbayListings from "../components/EbayListings.jsx";
+import SoldMarket from "../components/SoldMarket.jsx";
 import { cardApiUrl, cardNumberOf, cardSetOf, sameGrade, samplePriceKey } from "../lib/cards.js";
 import { formatDate, formatPrice } from "../lib/format.js";
 
@@ -145,9 +146,9 @@ export default function CardDetail() {
           </div>
         </div>
 
-        <EbayListings cardId={card.id} />
+        <SoldMarket cardId={card.id} />
 
-        <p className="text-sm text-charcoal-400 mt-4">Sold comps are not available yet.</p>
+        <EbayListings cardId={card.id} />
 
         {samplePrices.length > 0 && (
           <p className="text-sm text-charcoal-400 mt-2">Sample prices — not live market data.</p>
@@ -183,10 +184,7 @@ export default function CardDetail() {
           </p>
         )}
 
-        {samplePrices.length === 0 && (
-          <p className="mt-5 text-charcoal">No sample prices for this card.</p>
-        )}
-
+        {samplePrices.length > 0 && (
         <div className="mt-8">
           <h2 className="text-xl font-extrabold text-navy">
             {selectedPrice ? `${selectedPrice.label} sample records` : "Sample records"}
@@ -228,6 +226,7 @@ export default function CardDetail() {
             </table>
           </div>
         </div>
+        )}
       </div>
     </div>
   );

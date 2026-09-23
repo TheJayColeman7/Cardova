@@ -7,7 +7,7 @@
     "start": "tsx server.js",
     "db:migrate": "tsx src/scripts/migrate.ts",
     "import:cards": "tsx src/scripts/importPokemonCards.ts",
-    "test": "tsx --test src/adapters/catalogCardAdapter.test.ts src/adapters/pokemonCardAdapter.test.ts src/adapters/ebayListingAdapter.test.ts src/domain/market.test.ts src/services/cardService.test.ts src/services/recognitionService.test.ts src/utils/databaseUnavailable.test.ts src/recognition/resolvePokemonCandidate.test.ts src/providers/scrydex/mapScrydexVision.test.ts src/providers/scrydex/scrydexVisionProvider.test.ts src/http/imageUpload.test.ts src/mappers/scrydexPokemonCardMapper.test.ts src/providers/scrydex/scrydexPokemonCatalog.test.ts src/services/pokemonCatalogImport.test.ts"
+    "test": "tsx --test src/adapters/catalogCardAdapter.test.ts src/adapters/pokemonCardAdapter.test.ts src/adapters/ebayListingAdapter.test.ts src/domain/market.test.ts src/services/cardService.test.ts src/services/recognitionService.test.ts src/utils/databaseUnavailable.test.ts src/recognition/resolvePokemonCandidate.test.ts src/providers/scrydex/mapScrydexVision.test.ts src/providers/scrydex/scrydexVisionProvider.test.ts src/http/imageUpload.test.ts src/mappers/scrydexPokemonCardMapper.test.ts src/providers/scrydex/scrydexPokemonCatalog.test.ts src/services/pokemonCatalogImport.test.ts src/domain/marketSummary.test.ts src/providers/scrydex/mapScrydexListing.test.ts src/providers/scrydex/scrydexSoldCompProvider.test.ts src/services/marketService.test.ts"
   },
   "engines": {
     "node": ">=18.18.0"

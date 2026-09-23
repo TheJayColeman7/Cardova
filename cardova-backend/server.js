@@ -21,6 +21,8 @@ import { isDatabaseUnavailable } from "./src/utils/databaseUnavailable.ts";
 import { createRecognitionRouter } from "./src/routes/recognition.ts";
 import { createRecognitionService } from "./src/services/recognitionService.ts";
 import { createScrydexVisionProvider } from "./src/providers/scrydex/scrydexVisionProvider.ts";
+import { createMarketService } from "./src/services/marketService.ts";
+import { MarketDataError } from "./src/providers/scrydex/scrydexSoldCompProvider.ts";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: join(__dirname, ".env"), quiet: true });
 const catalog = JSON.parse(readFileSync(join(__dirname, "catalog.json"), "utf8"));
@@ -42,6 +44,8 @@ const cardService = createCardService({
     },
   },
 });
+
+const market = createMarketService();
 
 const recognition = createRecognitionService({
   provider: createScrydexVisionProvider(),
@@ -74,6 +78,26 @@ app.get("/api/cards", async (req, res) => {
     });
     res.json(result);
   } catch (error) {
+    sendCardError(res, error);
+  }
+});
+
+app.get("/api/cards/:id/market", async (req, res) => {
+  try {
+    const card = await cardService.getCard(req.params.id);
+    if (!card) {
+      res.status(404).json({ error: "We could not find that card." });
+      return;
+    }
+    const variant = typeof req.query.variant === "string" && req.query.variant.length > 0 ? req.query.variant : null;
+    const result = await market.getMarket(card, variant);
+    res.json(result);
+  } catch (error) {
+    if (error instanceof MarketDataError) {
+      const status = error.code === "market_timeout" ? 504 : error.code === "provider_response" ? 502 : 503;
+      res.status(status).json({ error: error.code, message: error.message });
+      return;
+    }
     sendCardError(res, error);
   }
 });

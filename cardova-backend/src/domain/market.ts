@@ -50,17 +50,23 @@ export interface MarketplaceListing {
 
 export interface SoldComp {
   dataType: "sold_comp";
-  marketplace: string;
+  marketplace: string | null;
   externalId: string | null;
   cardId: string;
   title: string | null;
   soldPrice: number | null;
   shipping: number | null;
-  currency: string;
+  currency: string | null;
   gradingCompany: string | null;
   grade: string | null;
   soldAt: string | null;
   source: string;
+  variant: string | null;
+  condition: string | null;
+  perfect: boolean | null;
+  signed: boolean | null;
+  error: boolean | null;
+  url: string | null;
 }
 
 export type MarketRecord = SamplePrice | SampleSale | PriceGuideValue | MarketplaceListing | SoldComp;
