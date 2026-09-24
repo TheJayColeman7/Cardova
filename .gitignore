@@ -4,5 +4,6 @@ cardova/node_modules
 cardova-backend/node_modules
 cardova/dist
 cardova-backend/dist
+.worktrees/
 *.log
 .DS_Store
