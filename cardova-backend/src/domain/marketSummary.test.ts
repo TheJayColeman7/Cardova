@@ -43,7 +43,7 @@ describe("sold comp summary", () => {
       comp({ externalId: "psa10", gradingCompany: "PSA", grade: "10", soldPrice: 1000, condition: null }),
       comp({ externalId: "bgs10", gradingCompany: "BGS", grade: "10", soldPrice: 1200, condition: null }),
     ]);
-    assert.equal(summary.raw.saleCount, 1);
+    assert.equal(summary.raw?.saleCount, 1);
     assert.equal(summary.grades.PSA?.["9"]?.saleCount, 1);
     assert.equal(summary.grades.PSA?.["10"]?.latestSale?.soldPrice, 1000);
     assert.equal(summary.grades.BGS?.["10"]?.latestSale?.soldPrice, 1200);

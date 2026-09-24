@@ -1,4 +1,11 @@
 import type { Card } from "../domain/card.js";
+import {
+  evaluateCompQuality,
+  qualitySummary,
+  type CompCardIdentity,
+  type CompQualityFlag,
+  type QualitySummary,
+} from "../domain/compQuality.js";
 import type { SoldComp } from "../domain/market.js";
 import {
   MARKET_WINDOW_DAYS,
@@ -16,6 +23,13 @@ import {
 
 export const MARKET_CACHE_TTL_MS = 30 * 60 * 1000;
 
+export interface MarketSoldComp extends SoldComp {
+  quality: {
+    disposition: "included" | "warning" | "excluded";
+    flags: CompQualityFlag[];
+  };
+}
+
 export interface MarketResponse {
   cardId: string;
   windowDays: number;
@@ -25,9 +39,28 @@ export interface MarketResponse {
   variants: string[];
   selectionRequired: boolean;
   summaries: GradeMarketSummaries | null;
-  soldComps: SoldComp[];
+  soldComps: MarketSoldComp[];
   exclusions: MarketExclusions;
+  quality: QualitySummary;
   cached: boolean;
+}
+
+const emptyQuality = (): QualitySummary => ({
+  included: 0,
+  warned: 0,
+  excluded: 0,
+  exclusionReasons: [],
+});
+
+function identityFor(card: Card, variant: string | null): CompCardIdentity {
+  const language = card.language?.trim() || (card.source === "pokemon" ? "English" : null);
+  return {
+    name: card.name,
+    setName: card.setName,
+    cardNumber: card.cardNumber,
+    language,
+    variant,
+  };
 }
 
 interface CacheEntry {
@@ -74,7 +107,20 @@ export function createMarketService(options?: {
     const selected = selectionRequired ? null : variant ?? (variants.length === 1 ? variants[0] ?? null : null);
     const scoped = selectionRequired ? [] : entry.value.included.filter((comp) => matchesVariant(comp, selected));
     const other = selectionRequired ? [] : entry.value.otherCurrency.filter((comp) => matchesVariant(comp, selected));
-    const soldComps = [...scoped, ...other].sort((left, right) => (right.soldAt ?? "").localeCompare(left.soldAt ?? ""));
+    const identity = identityFor(card, selected);
+    const evaluated = selectionRequired ? [] : evaluateCompQuality(scoped, identity);
+    const qualityByComp = new Map(evaluated.map((item) => [item.comp, item]));
+    const soldComps = [...scoped, ...other]
+      .sort((left, right) => (right.soldAt ?? "").localeCompare(left.soldAt ?? ""))
+      .map((comp) => {
+        const found = qualityByComp.get(comp);
+        return {
+          ...comp,
+          quality: found
+            ? { disposition: found.disposition, flags: found.flags }
+            : { disposition: "excluded" as const, flags: [] },
+        };
+      });
     return {
       cardId: card.id,
       windowDays: MARKET_WINDOW_DAYS,
@@ -83,9 +129,16 @@ export function createMarketService(options?: {
       variant: selected,
       variants,
       selectionRequired,
-      summaries: selectionRequired ? null : summarizeSoldComps(scoped),
+      summaries: selectionRequired
+        ? null
+        : summarizeSoldComps(scoped, {
+            identity,
+            windowComplete: entry.value.windowComplete,
+            now: new Date(now()),
+          }),
       soldComps,
       exclusions: entry.value.exclusions,
+      quality: selectionRequired ? emptyQuality() : qualitySummary(evaluated),
       cached,
     };
   }
@@ -104,6 +157,7 @@ export function createMarketService(options?: {
           summaries: null,
           soldComps: [],
           exclusions: emptyExclusions(),
+          quality: emptyQuality(),
           cached: false,
         };
       }

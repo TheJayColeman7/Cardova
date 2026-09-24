@@ -86,5 +86,38 @@ describe("createMarketService", () => {
     assert.equal(second.summaries?.grades.PSA?.["10"]?.saleCount, 1);
     assert.equal(second.soldComps.every((item) => item.variant === "unlimitedHolofoil"), true);
     assert.equal(second.soldComps.some((item) => isSampleMarketRecord(item)), false);
+    assert.equal(second.summaries?.grades.PSA?.["8"]?.saleCount, 0);
+  });
+
+  it("keeps an excluded contradictory comp visible and out of the actionable median", async () => {
+    const service = createMarketService({
+      now: () => Date.parse("2026-09-23T00:00:00.000Z"),
+      fetchSoldComps: async () => ({
+        windowComplete: true,
+        pagesFetched: 1,
+        comps: [
+          comp({ externalId: "en", title: "Charizard #4", soldPrice: 500, gradingCompany: null, grade: null }),
+          comp({ externalId: "jp", title: "Japanese Charizard #4", soldPrice: 40, gradingCompany: null, grade: null }),
+          comp({
+            externalId: "other-variant",
+            variant: "firstEditionShadowlessHolofoil",
+            title: "Charizard #4",
+            soldPrice: 8000,
+            gradingCompany: null,
+            grade: null,
+          }),
+        ],
+      }),
+    });
+
+    const market = await service.getMarket(card, "unlimitedHolofoil");
+    assert.equal(market.summaries?.rawConditions.Unknown.saleCount, 1);
+    assert.equal(market.summaries?.rawConditions.Unknown.latestSale?.soldPrice, 500);
+    assert.equal(market.summaries?.rawConditions.NM.saleCount, 0);
+    assert.equal(market.soldComps.some((item) => item.externalId === "jp"), true);
+    assert.equal(market.soldComps.find((item) => item.externalId === "jp")?.quality.disposition, "excluded");
+    assert.equal(market.soldComps.some((item) => item.externalId === "other-variant"), false);
+    assert.equal(market.quality.included, 1);
+    assert.equal(market.quality.excluded, 1);
   });
 });
